@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuterStart implements Runnable {
-	public static final int TIME_TO_RANEG = 18000; // a tag travel time until it
+	//public static final int TIME_TO_RANEG = 18000; // a tag travel time until it
 													// reaches the Reader Range.
-	public static final int TIME_TO_LEAVE_RANEG =2000; // a tag time in the
-														// Reader Range
+	public static final int TIME_TO_LEAVE_RANEG =0; // a tag time in the
+	private AtomicInteger TOTAL_NUMBER_OF_TAGS;												// Reader Range
 	private AtomicInteger NUMBER_OF_TAGS_IN_RANGE;
 	private AtomicInteger READ_NO_RESPONSE;
 	private AtomicInteger MISSED_COMPLETELY;
@@ -30,6 +30,7 @@ public class ExecuterStart implements Runnable {
 		MISSED_COMPLETELY = new AtomicInteger();
 		SUCCESS_RATE = new AtomicInteger();
 		FAILURE_RATE = new AtomicInteger();
+		TOTAL_NUMBER_OF_TAGS = new AtomicInteger();
 	}
 
 	@Override
@@ -46,8 +47,8 @@ public class ExecuterStart implements Runnable {
 			boolean missedCompletely = true; // true if the tag went out of the
 												// range without even getting a
 												// one query from reader
-			Thread.sleep(TIME_TO_RANEG);
 			NUMBER_OF_TAGS_IN_RANGE.incrementAndGet();
+			TOTAL_NUMBER_OF_TAGS.incrementAndGet();
 			long endTime = System.currentTimeMillis() + TIME_TO_LEAVE_RANEG;
 			while (timeInRangeOver(endTime) == false) {
 				if (ReaderCommands.readingStatus.equals(ReaderCommands.READING)
@@ -76,6 +77,9 @@ public class ExecuterStart implements Runnable {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		if (this.getTotalNumberOfTags() >= 1001){
+			ReaderCommands.CountinueRunning = false;
 		}
 		
 	}
@@ -136,5 +140,8 @@ public class ExecuterStart implements Runnable {
 
 	public int getReadNoResponse() {
 		return this.READ_NO_RESPONSE.get();
+	}
+	public int getTotalNumberOfTags(){
+		return this.TOTAL_NUMBER_OF_TAGS.get();
 	}
 }

@@ -10,7 +10,7 @@ public class BulkSize {
 	 * 0; public static volatile int READ_NO_RESPONSE = 0; public static
 	 * volatile int MISSED_COMPLETELY = 0;
 	 */
-	public static final int NUMBER_OF_TAGS = 60;
+	public static final int NUMBER_OF_TAGS = 1000;
 	public ReaderCommands startSample;
 	public ArrayList<Integer> randomDistances;
 	public static Thread threadOne;
@@ -24,20 +24,21 @@ public class BulkSize {
 		BulkSize instance = new BulkSize();
 		ExecuterStart EStart = new ExecuterStart();
 		ArrayList<Thread> tags = new ArrayList<Thread>();
-		instance.startSample = new ReaderCommands(100,instance,EStart);
-		instance.generateRandomVariables(10, 60);
+		instance.startSample = new ReaderCommands(instance,EStart);
+		instance.generateRandomVariables(4, 1000);
 		Thread firstReader = new Thread(instance.startSample);
 		firstReader.start();
 		threadOne = new Thread(EStart);
 		threadOne.start();
 		try {
 			tags = instance.initiateTags(EStart);
-			for (int i = 0; i <60; i++) {
+			for (int i = 0; i <1000; i++) {
 				Thread.sleep(instance.randomDistances.get(i));
 				(tags.get(i)).start();
 				System.out.println("The Distance btw " + (i - 1) + " and " + i
 						+ " " + instance.randomDistances.get(i));
 			}
+			firstReader = null;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,7 +62,7 @@ public class BulkSize {
 			a = firstNumber.nextInt(maximumDistance);
 			// b = secondNumber.nextInt(100);
 			// String finalNumber = a.toString() + "."+b.toString();
-			this.randomDistances.add(a * 1000);
+			this.randomDistances.add(a * 10);
 		}
 	}
 
