@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExecuterStart implements Runnable {
 	//public static final int TIME_TO_RANEG = 18000; // a tag travel time until it
 													// reaches the Reader Range.
-	public static final int TIME_TO_LEAVE_RANEG =45; // a tag time in the
+	public static final int TIME_TO_LEAVE_RANEG =35; // a tag time in the
 	private AtomicInteger TOTAL_NUMBER_OF_TAGS;												// Reader Range
 	private AtomicInteger NUMBER_OF_TAGS_IN_RANGE;
 	private AtomicInteger READ_NO_RESPONSE;
