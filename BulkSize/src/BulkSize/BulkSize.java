@@ -50,6 +50,7 @@ public class BulkSize {
 
 	public void generateRandomVariables(int maximumDistance,
 			int maximumNumberOfTags) {
+		// 10 is 1 meter , 15 is 1.5 meters and so on
 		Random firstNumber = new Random();
 		Random secondNumber = new Random();
 		/*
@@ -60,9 +61,10 @@ public class BulkSize {
 		Integer a, b;
 		for (int i = 1; i <= maximumNumberOfTags; i++) {
 			a = firstNumber.nextInt(maximumDistance);
-			// b = secondNumber.nextInt(100);
-			// String finalNumber = a.toString() + "."+b.toString();
-			this.randomDistances.add(a * 10);
+			 b = secondNumber.nextInt(100);
+		     String finalNumber = a.toString() + "."+b.toString();
+		     a = (int) (Double.parseDouble(finalNumber) * 10);
+		     this.randomDistances.add(a);
 		}
 	}
 
