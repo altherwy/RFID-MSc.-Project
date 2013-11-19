@@ -9,11 +9,12 @@ public class BulkSize {
 	 * volatile int SUCCESS_RATE = 0; public static volatile int FAILURE_RATE =
 	 * 0; public static volatile int READ_NO_RESPONSE = 0; public static
 	 * volatile int MISSED_COMPLETELY = 0;
+	 * What to chnage here:
+	 * NUMBER_OF_TAGS, GENERATE RANDOM VARIABLE, under INITIATE TAGS 
 	 */
 	public static final int NUMBER_OF_TAGS = 1000;
 	public ReaderCommands startSample;
 	public ArrayList<Integer> randomDistances;
-	public static Thread threadOne;
 
 	public BulkSize() {
 		this.randomDistances = new ArrayList<Integer>();
@@ -25,20 +26,21 @@ public class BulkSize {
 		ExecuterStart EStart = new ExecuterStart();
 		ArrayList<Thread> tags = new ArrayList<Thread>();
 		instance.startSample = new ReaderCommands(instance,EStart);
-		instance.generateRandomVariables(4, 1000);
+		instance.generateRandomVariables(4, NUMBER_OF_TAGS);
 		Thread firstReader = new Thread(instance.startSample);
 		firstReader.start();
-		threadOne = new Thread(EStart);
-		threadOne.start();
 		try {
 			tags = instance.initiateTags(EStart);
-			for (int i = 0; i <1000; i++) {
+			for (int i = 0; i <NUMBER_OF_TAGS; i++) {
+				if(i!=0){
 				Thread.sleep(instance.randomDistances.get(i));
-				(tags.get(i)).start();
+				}
+				Thread thread = tags.get(i);
+				thread.setName("Tag "+i);
+				thread.start();
 				System.out.println("The Distance btw " + (i - 1) + " and " + i
 						+ " " + instance.randomDistances.get(i));
 			}
-			firstReader = null;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
