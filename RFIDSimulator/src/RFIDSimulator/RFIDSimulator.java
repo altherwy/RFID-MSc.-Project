@@ -23,6 +23,9 @@ public class RFIDSimulator {
 	// public static final int END_COLUMN = 29;//0
 	public Vector<Integer> numbersForSort = new Vector<Integer>();
 	public Vector<Vector<Integer>> RFIDPlaces = new Vector<Vector<Integer>>();
+	public final int Number_OF_Readers = 10;
+	public int max = 0;
+	
 
 	public RFIDSimulator() {
 
@@ -62,18 +65,20 @@ public class RFIDSimulator {
 						+ path.get(i).get(2));
 			}
 			System.out.println("*****************************");
-			// savePaths.add(path);
+			
+			/***  Here where placing the readers starts***********/
 			RFID.extractNumbers(path);
 		}
 		Collections.sort(RFID.numbersForSort);
-		/*for (int x = 0; x < RFID.numbersForSort.size(); x++)
-			System.out.println("* " + RFID.numbersForSort.get(x) + " "
-					+ RFID.numbersForSort.size());*/
-		// //// ********** ///////
-		 RFID.RFIDPlaces = RFID.orderCells();
-		 System.out.println("*****************************");
-		 for (int j = 0; j < RFID.RFIDPlaces.size(); j++)
-				System.out.println(RFID.RFIDPlaces.get(j));
+
+		
+		RFID.RFIDPlaces = RFID.orderCells();
+		System.out.println("*****************************");
+		Vector<Vector<Integer>> finalPlaces = RFID.RFIDReadersPlaces(RFID.RFIDPlaces);
+		for (int j = 0; j < finalPlaces.size(); j++)
+			System.out.println(finalPlaces.get(j));
+		
+		/////// ********** //////////////
 
 	}
 
@@ -317,6 +322,7 @@ public class RFIDSimulator {
 	 */
 	public Vector<Vector<Integer>> orderCells() {
 		int count = 1;
+		int maximum_repeatition = 0;
 		Vector<Vector<Integer>> ordered = new Vector<Vector<Integer>>();
 
 		for (int i = 0; i < numbersForSort.size(); i++) {
@@ -326,23 +332,63 @@ public class RFIDSimulator {
 				int secondnumber = numbersForSort.get(i + 1);
 				if (firstnumber == secondnumber) {
 					count++;
+					if (count > maximum_repeatition)
+						maximum_repeatition = count;
 				} else {
 					temp.add(numbersForSort.get(i));
 					temp.add(count);
 					ordered.add(temp);
-					count =1;
+					count = 1;
 				}
-			}
-			else
-			{
+			} else {
 				temp.add(numbersForSort.get(i));
 				temp.add(count);
 				ordered.add(temp);
-				count =1;
+				count = 1;
 			}
 		}
+		this.max = maximum_repeatition;
 		return ordered;
 	}
-	
+	/*
+	 * Return Vector containing the cells where Readers should be placed
+	 */
+
+	public Vector<Vector<Integer>> RFIDReadersPlaces(Vector<Vector<Integer>> ordered) {
+		
+		Vector<Vector<Integer>> places = new Vector<Vector<Integer>>();
+		Vector<Vector<Integer>> temp = new Vector<Vector<Integer>>();
+		for (int i = max; i > 0; i--) {
+			temp = this.equaltonumber(ordered, i);
+			//System.out.println("Size +"+ temp);
+			if (places.size() <= this.Number_OF_Readers)
+				places.addAll(equaltonumber(ordered, i));
+
+			else {
+				int difference = places.size() - Number_OF_Readers;
+				while(difference > 0){
+					places.removeElementAt(places.indexOf(places.lastElement()));
+					difference --;
+				}
+				return places;
+			}
+		}
+		return places;
+
+	}
+	/*
+	 * Return all cells where the number of repeatition = number
+	 */
+
+	public Vector<Vector<Integer>> equaltonumber(Vector<Vector<Integer>> ordered, int number) {
+		int index = 0;
+		Vector<Vector<Integer>> temp = new Vector<Vector<Integer>>();
+		while (index < ordered.size()) {
+			if (ordered.get(index).get(1) == number)
+				temp.add(ordered.get(index));
+			index++;
+		}
+		return temp;
+	}
 
 }
