@@ -25,7 +25,6 @@ public class RFIDSimulator {
 	public Vector<Vector<Integer>> RFIDPlaces = new Vector<Vector<Integer>>();
 	public final int Number_OF_Readers = 10;
 	public int max = 0;
-	
 
 	public RFIDSimulator() {
 
@@ -65,20 +64,23 @@ public class RFIDSimulator {
 						+ path.get(i).get(2));
 			}
 			System.out.println("*****************************");
-			
-			/***  Here where placing the readers starts***********/
+
+			/*** Here where placing the readers starts ***********/
 			RFID.extractNumbers(path);
 		}
 		Collections.sort(RFID.numbersForSort);
 
-		
 		RFID.RFIDPlaces = RFID.orderCells();
 		System.out.println("*****************************");
-		Vector<Vector<Integer>> finalPlaces = RFID.RFIDReadersPlaces(RFID.RFIDPlaces);
+		for (int i=0; i<RFID.RFIDPlaces.size();i++)
+			System.out.println(RFID.RFIDPlaces.get(i));
+		System.out.println("*****************************");
+		Vector<Vector<Integer>> finalPlaces = RFID
+				.RFIDReadersPlaces(RFID.RFIDPlaces);
 		for (int j = 0; j < finalPlaces.size(); j++)
 			System.out.println(finalPlaces.get(j));
-		
-		/////// ********** //////////////
+
+		// ///// ********** //////////////
 
 	}
 
@@ -350,6 +352,7 @@ public class RFIDSimulator {
 		this.max = maximum_repeatition;
 		return ordered;
 	}
+
 	/*
 	 * Return Vector containing the cells where Readers should be placed
 	 */
@@ -359,28 +362,32 @@ public class RFIDSimulator {
 		Vector<Vector<Integer>> places = new Vector<Vector<Integer>>();
 		Vector<Vector<Integer>> temp = new Vector<Vector<Integer>>();
 		for (int i = max; i > 0; i--) {
-			temp = this.equaltonumber(ordered, i);
-			//System.out.println("Size +"+ temp);
-			if (places.size() <= this.Number_OF_Readers)
-				places.addAll(equaltonumber(ordered, i));
+			temp.addAll(this.equaltonumber(ordered, i));
+			System.out.println("FFFFF "+temp);
+		}
+			//while(places.size() <= this.Number_OF_Readers){ 
+				places.addAll(createRange(temp));
+			//}
 
-			else {
+			//else {
 				int difference = places.size() - Number_OF_Readers;
 				while(difference > 0){
 					places.removeElementAt(places.indexOf(places.lastElement()));
 					difference --;
 				}
 				return places;
-			}
-		}
-		return places;
+			//}
+		
+		//return places;
 
 	}
+
 	/*
 	 * Return all cells where the number of repeatition = number
 	 */
 
-	public Vector<Vector<Integer>> equaltonumber(Vector<Vector<Integer>> ordered, int number) {
+	public Vector<Vector<Integer>> equaltonumber(
+			Vector<Vector<Integer>> ordered, int number) {
 		int index = 0;
 		Vector<Vector<Integer>> temp = new Vector<Vector<Integer>>();
 		while (index < ordered.size()) {
@@ -389,6 +396,102 @@ public class RFIDSimulator {
 			index++;
 		}
 		return temp;
+	}
+	/*
+	 * Confirm that a cell is legit to place a reader on it, then return all legit cells 
+	 */
+
+	public Vector<Vector<Integer>> createRange(Vector<Vector<Integer>> candidateSites) {
+		Vector<Vector<Integer>> blackList = new Vector<Vector<Integer>>();
+		for (int i = 0; i < candidateSites.size(); i++) {
+			Vector<Integer> rc = new Vector<Integer>();
+			rc = splitRowfromColumn(candidateSites.get(i).get(0));
+			if (legitForReader(blackList, rc.get(0),rc.get(1)))
+				blackList.add(rc);
+
+		}
+		return blackList;
+	}
+
+	/*
+	 * Split row from column
+	 */
+	public Vector<Integer> splitRowfromColumn(Integer RowColumn) {
+		Vector<Integer> rc = new Vector<Integer>();
+		String temp = RowColumn.toString();
+		int row = -1;
+		int column = -1;
+		if (temp.length() == 4) {
+			row = Integer.parseInt(temp.substring(0, 2));
+			column = Integer.parseInt(temp.substring(2, 4));
+			rc.add(row);
+			rc.add(column);
+			return rc;
+		}
+		if (temp.length() == 3) {
+			row = Integer.parseInt(temp.substring(0, 1));
+			column = Integer.parseInt(temp.substring(1, 3));
+			rc.add(row);
+			rc.add(column);
+			return rc;
+		}
+		row = Integer.parseInt(temp.substring(0, 1));
+		column = Integer.parseInt(temp.substring(1, 2));
+		rc.add(row);
+		rc.add(column);
+		return rc;
+	}
+	/*
+	 * True if a spot is legit for a reader to be placed on, false otherwise 
+	 */
+
+	public boolean legitForReader(Vector<Vector<Integer>> blackList, int Arow, int Acolumn){
+		for(int i=1; i<= 4; i++){
+			for(int j=0; j<= 4; j++){
+			if(! legitForReaderHelper(Arow-i, Acolumn-j, blackList))
+				return false;
+		}
+			}
+		for(int i=1; i<= 4; i++){
+			for(int j=0; j<= 4; j++){
+			if(! legitForReaderHelper(Arow-i, Acolumn+j, blackList))
+				return false;
+		}
+			}
+		for(int i=1; i<= 4; i++){
+			for(int j=0; j<= 4; j++){
+			if(! legitForReaderHelper(Arow+i, Acolumn-j, blackList))
+				return false;
+		}
+			}
+		for(int i=1; i<= 4; i++){
+			for(int j=0; j<= 4; j++){
+			if(! legitForReaderHelper(Arow+i, Acolumn+j, blackList))
+				return false;
+		}
+			}
+		for(int j=1; j<=4 ; j++){
+			if(! legitForReaderHelper(Arow, Acolumn+j, blackList))
+				return false;
+			if(! legitForReaderHelper(Arow, Acolumn-j, blackList))
+				return false;
+		}
+			
+		
+		return true;
+
+	}
+
+	public boolean legitForReaderHelper(int Arow, int Acolumn, Vector<Vector<Integer>> blackList) {
+		int Brow = -1;
+		int Bcolumn = -1;
+		for (int index = 0; index < blackList.size(); index++) {
+			Brow = blackList.get(index).get(0);
+			Bcolumn = blackList.get(index).get(1);
+			if (Arow == Brow && Acolumn == Bcolumn)
+				return false;
+		}
+		return true;
 	}
 
 }
