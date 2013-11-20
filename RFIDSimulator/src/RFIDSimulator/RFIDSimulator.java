@@ -22,6 +22,7 @@ public class RFIDSimulator {
 	// public static final int END_ROW = 19;//5
 	// public static final int END_COLUMN = 29;//0
 	public Vector<Integer> numbersForSort = new Vector<Integer>();
+	public Vector<Vector<Integer>> RFIDPlaces = new Vector<Vector<Integer>>();
 
 	public RFIDSimulator() {
 
@@ -65,10 +66,14 @@ public class RFIDSimulator {
 			RFID.extractNumbers(path);
 		}
 		Collections.sort(RFID.numbersForSort);
-		for (int x = 0; x < RFID.numbersForSort.size(); x++)
+		/*for (int x = 0; x < RFID.numbersForSort.size(); x++)
 			System.out.println("* " + RFID.numbersForSort.get(x) + " "
-					+ RFID.numbersForSort.size());
+					+ RFID.numbersForSort.size());*/
 		// //// ********** ///////
+		 RFID.RFIDPlaces = RFID.orderCells();
+		 System.out.println("*****************************");
+		 for (int j = 0; j < RFID.RFIDPlaces.size(); j++)
+				System.out.println(RFID.RFIDPlaces.get(j));
 
 	}
 
@@ -148,10 +153,12 @@ public class RFIDSimulator {
 		int column = current.get(2);
 		while (true) {
 			routetoParent.add(current);
-			/*System.out.println("YRS " + current.get(0) + " / " + current.get(1)
-					+ "/" + current.get(2) + "/" + current.get(3) + "/  "
-					+ current.get(4) + " / " + current.get(5) + "/ "
-					+ current.get(6) + "/ " + current.get(7));*/
+			/*
+			 * System.out.println("YRS " + current.get(0) + " / " +
+			 * current.get(1) + "/" + current.get(2) + "/" + current.get(3) +
+			 * "/  " + current.get(4) + " / " + current.get(5) + "/ " +
+			 * current.get(6) + "/ " + current.get(7));
+			 */
 			current = this.returnParentVector(current, list);
 			if (current == null) {
 				System.out.println("NO Parent !!!!");
@@ -211,9 +218,9 @@ public class RFIDSimulator {
 	/*
 	 * add collections of start and end points
 	 */
-	public Vector<Vector<Integer>> fillStartandEndPoints(){
+	public Vector<Vector<Integer>> fillStartandEndPoints() {
 		Vector<Vector<Integer>> save = new Vector<Vector<Integer>>();
-		save.add(fillStartandEndPointsHelper(12, 8, 19,20));
+		save.add(fillStartandEndPointsHelper(12, 8, 19, 20));
 		save.add(fillStartandEndPointsHelper(19, 20, 9, 32));
 		save.add(fillStartandEndPointsHelper(9, 32, 4, 32));
 		save.add(fillStartandEndPointsHelper(4, 32, 4, 19));
@@ -224,16 +231,13 @@ public class RFIDSimulator {
 		save.add(fillStartandEndPointsHelper(1, 3, 7, 2));
 		save.add(fillStartandEndPointsHelper(7, 2, 12, 4));
 		Vector<Vector<Integer>> temp = this.readFromFile();
-		//****** The Second Person *************/
-		for(int index=0; index< temp.size();index++)
-		save.add(fillStartandEndPointsHelper(temp.get(index).get(0), temp.get(index).get(1), temp.get(index).get(2), temp.get(index).get(3)));
-		
-		
-		
-		
+		// ****** The Second Person *************/
+		for (int index = 0; index < temp.size(); index++)
+			save.add(fillStartandEndPointsHelper(temp.get(index).get(0), temp
+					.get(index).get(1), temp.get(index).get(2), temp.get(index)
+					.get(3)));
 		return save;
-		
-		
+
 	}
 
 	/*
@@ -267,6 +271,7 @@ public class RFIDSimulator {
 			numbersForSort.add(Integer.parseInt(temp));
 		}
 	}
+
 	/*
 	 * Read from file, start and end points
 	 */
@@ -276,7 +281,6 @@ public class RFIDSimulator {
 		BufferedReader br = null;
 		Vector<Integer> points = new Vector<Integer>();
 
-
 		try {
 
 			String sCurrentLine;
@@ -285,14 +289,13 @@ public class RFIDSimulator {
 					"/Users/youssef_mac/Desktop/startandend.txt"));
 
 			while ((sCurrentLine = br.readLine()) != null) {
-				if (!sCurrentLine.equals("**")){
+				if (!sCurrentLine.equals("**")) {
 					points.add(Integer.parseInt(sCurrentLine.trim()));
-				}
-				else{
+				} else {
 					temp.add(points);
 					points = new Vector<Integer>();
 				}
-				
+
 			}
 
 		} catch (IOException e) {
@@ -308,5 +311,38 @@ public class RFIDSimulator {
 		return temp;
 
 	}
+
+	/*
+	 * Order cells based on the popularity
+	 */
+	public Vector<Vector<Integer>> orderCells() {
+		int count = 1;
+		Vector<Vector<Integer>> ordered = new Vector<Vector<Integer>>();
+
+		for (int i = 0; i < numbersForSort.size(); i++) {
+			Vector<Integer> temp = new Vector<Integer>();
+			if (i != numbersForSort.size() - 1) {
+				int firstnumber = numbersForSort.get(i);
+				int secondnumber = numbersForSort.get(i + 1);
+				if (firstnumber == secondnumber) {
+					count++;
+				} else {
+					temp.add(numbersForSort.get(i));
+					temp.add(count);
+					ordered.add(temp);
+					count =1;
+				}
+			}
+			else
+			{
+				temp.add(numbersForSort.get(i));
+				temp.add(count);
+				ordered.add(temp);
+				count =1;
+			}
+		}
+		return ordered;
+	}
+	
 
 }
