@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class AStarAlgorithm {
-	public final int numberOfRowsinMap = 21;
-	public final int numberOfColumnmsinMap = 35;
+	public  final int numberOfRowsinMap = 21;
+	public  final int numberOfColumnmsinMap = 35;
 	public int map[][] = new int[numberOfRowsinMap][numberOfColumnmsinMap]; // First is row
 	public final int wakeable = 2;
 	public final int unWakeable = 1;
 	public int obstacles[][] = new int[250][2];
+	public int doors[] = new int [14];
 	// Vector contains ( index, row, column, FatherRow, FatherColumn, G,H)
 	public ArrayList<Vector<Integer>> openList = new ArrayList<Vector<Integer>>();
 	public ArrayList<Vector<Integer>> closeList = new ArrayList<Vector<Integer>>();
@@ -120,6 +121,7 @@ public class AStarAlgorithm {
 				,3,16,3,17,3,18,3,25,3,26,3,27,3,33,3,34,
 				4,0,4,1,4,16,4,17,4,18,4,25,4,26,4,27,4,33,4,34,
 				5,0,5,1,5,25,5,26,5,27,5,33,5,34,
+				6,25,6,26,6,27,
 				8,33,8,34,9,33,9,34,
 				10,0,10,1,10,2,10,3,10,4,10,5,10,6,10,7,10,8,10,9,10,10,10,11,10,12,10,13,10,14,10,15,
 				10,26,10,27,10,33,10,34,11,2,11,3,11,9,11,10,
@@ -127,7 +129,8 @@ public class AStarAlgorithm {
 				14,15,14,16,14,20,14,21,14,22,14,23,14,24,14,25,15,25
 				,16,25,17,25,18,15,18,25,18,26,18,27,18,34,
 				19,15,19,16,19,17,19,18,19,25,19,26,19,27,
-				20,5,20,6,20,15,20,16,20,17,20,18,20,25,20,26,20,27};
+				20,5,20,6,20,15,20,16,20,17,20,18,20,25,20,26,20,27}; 
+		createDoors();
 		int index = 0;
 		for (int i = 0; i < (rowColObs.length)/2; i++) {
 			for (int j = 0; j < 2; j++) {
@@ -137,6 +140,26 @@ public class AStarAlgorithm {
 		}
 		return (rowColObs.length)/2;
 
+	}
+	/*
+	 * return the cells that represents door, for motion sensors only 
+	 */
+	public void createDoors(){
+		doors [0] = 1115;
+		doors [1] = 1215;
+		doors [2] = 1515;
+		doors [3] = 1615;
+		doors [4] = 1715;
+		doors [5] = 1417;
+		doors [6] = 1418;
+		doors [7] = 1419;
+		doors [8] = 1829;
+		doors [9] = 1830;
+		doors [10] = 1831;
+		doors [11] = 1832;
+		doors [12] = 1534;
+		doors [13] = 1634;
+				
 	}
 
 	/*

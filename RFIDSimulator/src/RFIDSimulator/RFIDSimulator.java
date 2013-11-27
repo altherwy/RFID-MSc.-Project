@@ -21,13 +21,20 @@ public class RFIDSimulator {
 	// public static final int START_COLUMN = 10; //0
 	// public static final int END_ROW = 19;//5
 	// public static final int END_COLUMN = 29;//0
+	public AStarAlgorithm AST;
 	public Vector<Integer> numbersForSort = new Vector<Integer>();
 	public Vector<Vector<Integer>> RFIDPlaces = new Vector<Vector<Integer>>();
 	public final int Number_OF_Readers = 10;
+	public final int Number_Of_MS = 15;
+	public final int readerRadious = 2;
+	public final int virtualReaderRnage = 4;
+	public final int virtualMSRange = 2;
+	
 	public int max = 0;
 
 	public RFIDSimulator() {
-
+		
+         AST = new AStarAlgorithm();
 	}
 
 	/**
@@ -56,6 +63,7 @@ public class RFIDSimulator {
 			// collection.get(0)+"  "+collection.get(1));
 			path = RFID.finalSolution(RFID.swap(path), collection.get(0),
 					collection.get(1));
+			
 			if (path == null)
 				System.out.println("No cells in the path!!");
 			System.out.println("---------------------------");
@@ -75,13 +83,25 @@ public class RFIDSimulator {
 		for (int i=0; i<RFID.RFIDPlaces.size();i++)
 			System.out.println(RFID.RFIDPlaces.get(i));
 		System.out.println("*****************************");
-		Vector<Vector<Integer>> finalPlaces = RFID
-				.RFIDReadersPlaces(RFID.RFIDPlaces);
+		
+		
+		Vector<Vector<Integer>> finalPlaces = RFID.RFIDReadersPlaces(RFID.RFIDPlaces); // find the readers spots
+		Vector<Vector<Integer>> readersWithoutRanges = finalPlaces;
+		Vector<Vector<Integer>> readerWithRange = RFID.createPhysicalRange(finalPlaces, RFID.readerRadious); //create the readers ranges
+		Vector<Vector<Integer>> MSPlaces = RFID.MSPlaces(RFID.AST.doors, readerWithRange, readersWithoutRanges); // find the MS spots
+		
+		// Create the MS ranges
+		
+		
+		/////// ********** //////////////
 		for (int j = 0; j < finalPlaces.size(); j++)
 			System.out.println(finalPlaces.get(j));
+		
+		System.out.println("*********************");
+		for (int j = 0; j < MSPlaces.size(); j++)
+			System.out.println(MSPlaces.get(j));
 
-		// ///// ********** //////////////
-
+		
 	}
 
 	/*
@@ -365,21 +385,115 @@ public class RFIDSimulator {
 			temp.addAll(this.equaltonumber(ordered, i));
 			System.out.println("FFFFF "+temp);
 		}
-			//while(places.size() <= this.Number_OF_Readers){ 
-				places.addAll(createRange(temp));
-			//}
-
-			//else {
+			 
+				places.addAll(createVirtualRange(temp));
+			
 				int difference = places.size() - Number_OF_Readers;
 				while(difference > 0){
 					places.removeElementAt(places.indexOf(places.lastElement()));
 					difference --;
 				}
 				return places;
-			//}
 		
-		//return places;
 
+	}
+	/*
+	 * Return Vector containing the cells where MSs should be placed
+	 */
+	
+	public Vector<Vector<Integer>> MSPlaces(int [] listOfDoors,Vector<Vector<Integer>> readersWithRanges, Vector<Vector<Integer>> readersWithoutRange ){
+		int index = 0;
+		Vector<Vector<Integer>> places = new Vector<Vector<Integer>>();
+
+		while (places.size() <= Number_Of_MS && index < listOfDoors.length){
+			Vector<Integer> temp = new Vector<Integer>();
+			temp = splitRowfromColumn(listOfDoors[index]);
+			
+			if(legitForReader(readersWithRanges, temp.get(0),temp.get(1), virtualMSRange)){
+			places.add(temp);
+			readersWithRanges.add(temp);
+			}
+			
+			index ++;
+		}
+		
+		
+		int count =0;
+		
+		//while (places.size() < Number_Of_MS && count < readersWithoutRange.size() ){
+			//Vector<Vector<Integer>> savePlaces = new Vector<Vector<Integer>>();
+			//savePlaces = places;
+			//places.addAll(returnPlacesforMS(readersWithoutRange.get(count).get(0), readersWithoutRange.get(count).get(1), readersWithRanges, savePlaces));
+		returnPlacesforMS(readersWithRanges, places, readersWithoutRange);
+			//count ++;
+		//}
+		if (places.size() > Number_Of_MS){
+			int x = places.size() - Number_Of_MS;
+			for(int i=0; i< x; i++)
+				places.remove(places.lastElement());
+		}
+			
+			return places;
+		
+	}
+	/*
+	 * return candidate sites to place MSs near readers
+	 */
+	public Vector<Vector<Integer>> returnPlacesforMS( Vector<Vector<Integer>> readersWithRanges, Vector<Vector<Integer>> places, Vector<Vector<Integer>> readersWithoutRange){
+		int count =0;
+		while (places.size() < Number_Of_MS && count < readersWithoutRange.size() ){
+		//Vector<Vector<Integer>> places = new Vector<Vector<Integer>>();
+			int row= readersWithoutRange.get(count).get(0);
+			int column = readersWithoutRange.get(count).get(1);
+		for (int i=0; i<3; i++ ){
+			if (row+i < AST.numberOfRowsinMap && column+3 < AST.numberOfColumnmsinMap){
+			if(isAvaliableAndWakeable(row+i, column+3, readersWithRanges)){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(row+i);
+				temp.add(column+3);
+				if(!places.contains(temp) && legitForReader(places, temp.get(0),temp.get(1), virtualMSRange))
+				places.add(temp);
+			}
+			}
+			if (row+i < AST.numberOfRowsinMap && column-3 >= 0){
+			if(isAvaliableAndWakeable(row+i, column-3, readersWithRanges)){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(row+i);
+				temp.add(column-3);
+				if(!places.contains(temp) &&  legitForReader(places, temp.get(0),temp.get(1), virtualMSRange))
+				places.add(temp);
+			}}
+			if (row-i >= 0 && column+3 < AST.numberOfColumnmsinMap){
+			if(isAvaliableAndWakeable(row-i, column+3, readersWithRanges)){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(row-i);
+				temp.add(column+3);
+				if(!places.contains(temp)  && legitForReader(places, temp.get(0),temp.get(1), virtualMSRange))
+				places.add(temp);
+			}}
+			if (row-i >= 0 && column-3 >= 0){
+			if(isAvaliableAndWakeable(row-i, column-3, readersWithRanges)){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(row-i);
+				temp.add(column-3);
+				if(!places.contains(temp) && legitForReader(places, temp.get(0),temp.get(1), virtualMSRange))
+				places.add(temp);
+			}}
+		}
+		count ++;
+		}
+		return places;
+		
+	}
+	/*
+	 * Find out if a cell is available to add MS on it and wakeable 
+	 */
+	public boolean isAvaliableAndWakeable(int ARow, int AColumn, Vector<Vector<Integer>> readersWithRanges){
+		for(int i=0; i< readersWithRanges.size();i++){
+			if ((readersWithRanges.get(i).get(0) == ARow && readersWithRanges.get(i).get(1) == AColumn) || AST.map[ARow][AColumn] == 1)
+				return false;
+		}
+		return true;
 	}
 
 	/*
@@ -401,12 +515,12 @@ public class RFIDSimulator {
 	 * Confirm that a cell is legit to place a reader on it, then return all legit cells 
 	 */
 
-	public Vector<Vector<Integer>> createRange(Vector<Vector<Integer>> candidateSites) {
+	public Vector<Vector<Integer>> createVirtualRange(Vector<Vector<Integer>> candidateSites) {
 		Vector<Vector<Integer>> blackList = new Vector<Vector<Integer>>();
 		for (int i = 0; i < candidateSites.size(); i++) {
 			Vector<Integer> rc = new Vector<Integer>();
 			rc = splitRowfromColumn(candidateSites.get(i).get(0));
-			if (legitForReader(blackList, rc.get(0),rc.get(1)))
+			if (legitForReader(blackList, rc.get(0),rc.get(1),virtualReaderRnage ))
 				blackList.add(rc);
 
 		}
@@ -445,32 +559,32 @@ public class RFIDSimulator {
 	 * True if a spot is legit for a reader to be placed on, false otherwise 
 	 */
 
-	public boolean legitForReader(Vector<Vector<Integer>> blackList, int Arow, int Acolumn){
-		for(int i=1; i<= 4; i++){
-			for(int j=0; j<= 4; j++){
+	public boolean legitForReader(Vector<Vector<Integer>> blackList, int Arow, int Acolumn, int numberOfSpots){
+		for(int i=1; i<= numberOfSpots; i++){
+			for(int j=0; j<= numberOfSpots; j++){
 			if(! legitForReaderHelper(Arow-i, Acolumn-j, blackList))
 				return false;
 		}
 			}
-		for(int i=1; i<= 4; i++){
-			for(int j=0; j<= 4; j++){
+		for(int i=1; i<= numberOfSpots; i++){
+			for(int j=0; j<= numberOfSpots; j++){
 			if(! legitForReaderHelper(Arow-i, Acolumn+j, blackList))
 				return false;
 		}
 			}
-		for(int i=1; i<= 4; i++){
-			for(int j=0; j<= 4; j++){
+		for(int i=1; i<= numberOfSpots; i++){
+			for(int j=0; j<= numberOfSpots; j++){
 			if(! legitForReaderHelper(Arow+i, Acolumn-j, blackList))
 				return false;
 		}
 			}
-		for(int i=1; i<= 4; i++){
-			for(int j=0; j<= 4; j++){
+		for(int i=1; i<= numberOfSpots; i++){
+			for(int j=0; j<= numberOfSpots; j++){
 			if(! legitForReaderHelper(Arow+i, Acolumn+j, blackList))
 				return false;
 		}
 			}
-		for(int j=1; j<=4 ; j++){
+		for(int j=1; j<=numberOfSpots ; j++){
 			if(! legitForReaderHelper(Arow, Acolumn+j, blackList))
 				return false;
 			if(! legitForReaderHelper(Arow, Acolumn-j, blackList))
@@ -492,6 +606,98 @@ public class RFIDSimulator {
 				return false;
 		}
 		return true;
+	}
+	/*
+	 * Create physical ranges
+	 */
+	
+	public Vector<Vector<Integer>> createPhysicalRange(Vector<Vector<Integer>> readers, int rangeRadious){
+		Vector<Vector<Integer>> readerWithRange = new Vector<Vector<Integer>>();
+		for (int index = 0; index < readers.size(); index++){
+			readerWithRange.addAll(physicalRangeHelper(readers.get(index).get(0), readers.get(index).get(1), rangeRadious));
+		}
+		return readerWithRange;
+	}
+	
+	
+	public Vector<Vector<Integer>> physicalRangeHelper( int Arow, int Acolumn, int rangeRadious){
+		int highestRow = AST.numberOfRowsinMap;
+		int highestColumn = AST.numberOfColumnmsinMap;
+		Vector<Vector<Integer>> readerWithRange = new Vector<Vector<Integer>>();
+		for(int i=1; i <= rangeRadious; i++){
+			for(int j=0; j<= rangeRadious; j++){
+				if(Arow+i <= highestRow && Acolumn+j <= highestColumn ){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(Arow+i);
+				temp.add(Acolumn + j);
+				temp.add(Arow);
+				temp.add(Acolumn);
+				readerWithRange.add(temp);
+				}
+			}
+		}
+		for(int i=1; i <= rangeRadious; i++){
+			for(int j=0; j<= rangeRadious; j++){
+				if(Arow-i >= 0 && Acolumn+j <= highestColumn ){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(Arow-i);
+				temp.add(Acolumn + j);
+				temp.add(Arow);
+				temp.add(Acolumn);
+				readerWithRange.add(temp);
+				}
+			}
+		}
+		for(int i=1; i <= rangeRadious; i++){
+			for(int j=0; j<= rangeRadious; j++){
+				if(Arow-i >= 0 && Acolumn-j >= 0 ){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(Arow-i);
+				temp.add(Acolumn - j);
+				temp.add(Arow);
+				temp.add(Acolumn);
+				readerWithRange.add(temp);
+				}
+			}
+		}
+		for(int i=1; i <= rangeRadious; i++){
+			for(int j=0; j<= rangeRadious; j++){
+				if(Arow+i <= highestRow && Acolumn-j >= 0 ){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(Arow+i);
+				temp.add(Acolumn - j);
+				temp.add(Arow);
+				temp.add(Acolumn);
+				readerWithRange.add(temp);
+				}
+			}
+		}
+		
+		for (int j=0; j <=rangeRadious; j++){
+			if (Acolumn-j >= 0){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(Arow);
+				temp.add(Acolumn - j);
+				temp.add(Arow);
+				temp.add(Acolumn);
+				readerWithRange.add(temp);
+			}
+				
+		}
+		for (int j=1; j <=rangeRadious; j++){
+			if (Acolumn+j <= highestColumn){
+				Vector<Integer> temp = new Vector<Integer>();
+				temp.add(Arow);
+				temp.add(Acolumn + j);
+				temp.add(Arow);
+				temp.add(Acolumn);
+				readerWithRange.add(temp);
+			}
+				
+		}
+
+		
+		return readerWithRange;		
 	}
 
 }
