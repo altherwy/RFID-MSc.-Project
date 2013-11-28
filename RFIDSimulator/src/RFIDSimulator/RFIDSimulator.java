@@ -27,14 +27,21 @@ public class RFIDSimulator {
 	public final int Number_OF_Readers = 10;
 	public final int Number_Of_MS = 15;
 	public final int readerRadious = 2;
+	public final int MSRadious = 1;
 	public final int virtualReaderRnage = 4;
 	public final int virtualMSRange = 2;
+	public Vector<Vector<Integer>> rfidreaders, readersRange, MS, MSranges;
+	public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
 	
 	public int max = 0;
 
 	public RFIDSimulator() {
 		
          AST = new AStarAlgorithm();
+         rfidreaders = new Vector<Vector<Integer>>();
+         readersRange = new Vector<Vector<Integer>>();
+         MS = new Vector<Vector<Integer>>();
+         MSranges = new Vector<Vector<Integer>>();
 	}
 
 	/**
@@ -44,13 +51,11 @@ public class RFIDSimulator {
 		// TODO Auto-generated method stub
 
 		RFIDSimulator RFID = new RFIDSimulator();
-		// Vector<ArrayList<Vector<Integer>>> savePaths = new
-		// Vector<ArrayList<Vector<Integer>>>(); // to save all routes for
-		// different
-		// ... end and start points
+		
 		Vector<Vector<Integer>> startandEnd = RFID.fillStartandEndPoints();
-		// System.out.println("Size "+ startandEnd.size());
+		
 		for (int index = 0; index < startandEnd.size(); index++) {
+			
 			AStarAlgorithm AStar = new AStarAlgorithm();
 			ArrayList<Vector<Integer>> path = new ArrayList<Vector<Integer>>();
 			Vector<Integer> collection = new Vector<Integer>();
@@ -58,49 +63,50 @@ public class RFIDSimulator {
 
 			path = AStar.findPath(collection.get(0), collection.get(1),
 					collection.get(2), collection.get(3));
-			// Path A starts from the target all the way to the start
-			// System.out.println("Start   *** "+
-			// collection.get(0)+"  "+collection.get(1));
 			path = RFID.finalSolution(RFID.swap(path), collection.get(0),
 					collection.get(1));
 			
 			if (path == null)
 				System.out.println("No cells in the path!!");
-			System.out.println("---------------------------");
-			for (int i = 0; i < path.size(); i++) {
-				System.out.println("Row: " + path.get(i).get(1) + "Column: "
-						+ path.get(i).get(2));
-			}
-			System.out.println("*****************************");
+			
+			//for (int i = 0; i < path.size(); i++) {
+				//System.out.println("Row: " + path.get(i).get(1) + "Column: "
+					//	+ path.get(i).get(2));
+			
+			//}
+			
 
 			/*** Here where placing the readers starts ***********/
 			RFID.extractNumbers(path);
 		}
+		
 		Collections.sort(RFID.numbersForSort);
 
 		RFID.RFIDPlaces = RFID.orderCells();
-		System.out.println("*****************************");
-		for (int i=0; i<RFID.RFIDPlaces.size();i++)
-			System.out.println(RFID.RFIDPlaces.get(i));
-		System.out.println("*****************************");
+		
 		
 		
 		Vector<Vector<Integer>> finalPlaces = RFID.RFIDReadersPlaces(RFID.RFIDPlaces); // find the readers spots
+		RFID.rfidreaders = finalPlaces; // our first guy, RFID readers without ranges
 		Vector<Vector<Integer>> readersWithoutRanges = finalPlaces;
 		Vector<Vector<Integer>> readerWithRange = RFID.createPhysicalRange(finalPlaces, RFID.readerRadious); //create the readers ranges
+		RFID.readersRange.addAll(readerWithRange); // our second guy, readers with range
+		
 		Vector<Vector<Integer>> MSPlaces = RFID.MSPlaces(RFID.AST.doors, readerWithRange, readersWithoutRanges); // find the MS spots
+		RFID.MS.addAll(MSPlaces); // our third guy, MS without range
+		RFID.MSranges = RFID.createPhysicalRange(MSPlaces, RFID.MSRadious);
 		
-		// Create the MS ranges
 		
+		//********************//
+		ArrayList<Vector<Integer>> path = RFID.AST.findPath(4, 19, 3, 32);
+		path = RFID.finalSolution(RFID.swap(path), 4,19);
 		
-		/////// ********** //////////////
-		for (int j = 0; j < finalPlaces.size(); j++)
-			System.out.println(finalPlaces.get(j));
-		
-		System.out.println("*********************");
-		for (int j = 0; j < MSPlaces.size(); j++)
-			System.out.println(MSPlaces.get(j));
-
+		//Vector<Vector<Integer>> tempV = track.Track(path, RFID.readersRange, RFID.MSranges, 12345);
+		TrackPersons track = new TrackPersons(RFID.readersRange, RFID.MSranges);
+		Vector<Vector<Vector<Integer>>> trA= track.allTrackingResults();
+		for(Vector<Vector<Integer>> item : trA)
+			for (Vector<Integer> small : item)
+			System.out.println(small);
 		
 	}
 
@@ -257,7 +263,7 @@ public class RFIDSimulator {
 		save.add(fillStartandEndPointsHelper(7, 8, 1, 3));
 		save.add(fillStartandEndPointsHelper(1, 3, 7, 2));
 		save.add(fillStartandEndPointsHelper(7, 2, 12, 4));
-		Vector<Vector<Integer>> temp = this.readFromFile();
+		Vector<Vector<Integer>> temp = this.readFromFile(link);
 		// ****** The Second Person *************/
 		for (int index = 0; index < temp.size(); index++)
 			save.add(fillStartandEndPointsHelper(temp.get(index).get(0), temp
@@ -303,7 +309,7 @@ public class RFIDSimulator {
 	 * Read from file, start and end points
 	 */
 
-	public Vector<Vector<Integer>> readFromFile() {
+	public Vector<Vector<Integer>> readFromFile(String link) {
 		Vector<Vector<Integer>> temp = new Vector<Vector<Integer>>();
 		BufferedReader br = null;
 		Vector<Integer> points = new Vector<Integer>();
@@ -312,8 +318,7 @@ public class RFIDSimulator {
 
 			String sCurrentLine;
 
-			br = new BufferedReader(new FileReader(
-					"/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt"));
+			br = new BufferedReader(new FileReader(link));
 
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (!sCurrentLine.equals("**")) {
@@ -383,7 +388,7 @@ public class RFIDSimulator {
 		Vector<Vector<Integer>> temp = new Vector<Vector<Integer>>();
 		for (int i = max; i > 0; i--) {
 			temp.addAll(this.equaltonumber(ordered, i));
-			System.out.println("FFFFF "+temp);
+			//System.out.println("FFFFF "+temp);
 		}
 			 
 				places.addAll(createVirtualRange(temp));
@@ -626,7 +631,7 @@ public class RFIDSimulator {
 		Vector<Vector<Integer>> readerWithRange = new Vector<Vector<Integer>>();
 		for(int i=1; i <= rangeRadious; i++){
 			for(int j=0; j<= rangeRadious; j++){
-				if(Arow+i <= highestRow && Acolumn+j <= highestColumn ){
+				if(Arow+i < highestRow && Acolumn+j < highestColumn ){
 				Vector<Integer> temp = new Vector<Integer>();
 				temp.add(Arow+i);
 				temp.add(Acolumn + j);
@@ -638,7 +643,7 @@ public class RFIDSimulator {
 		}
 		for(int i=1; i <= rangeRadious; i++){
 			for(int j=0; j<= rangeRadious; j++){
-				if(Arow-i >= 0 && Acolumn+j <= highestColumn ){
+				if(Arow-i >= 0 && Acolumn+j < highestColumn ){
 				Vector<Integer> temp = new Vector<Integer>();
 				temp.add(Arow-i);
 				temp.add(Acolumn + j);
@@ -662,7 +667,7 @@ public class RFIDSimulator {
 		}
 		for(int i=1; i <= rangeRadious; i++){
 			for(int j=0; j<= rangeRadious; j++){
-				if(Arow+i <= highestRow && Acolumn-j >= 0 ){
+				if(Arow+i < highestRow && Acolumn-j >= 0 ){
 				Vector<Integer> temp = new Vector<Integer>();
 				temp.add(Arow+i);
 				temp.add(Acolumn - j);
@@ -685,7 +690,7 @@ public class RFIDSimulator {
 				
 		}
 		for (int j=1; j <=rangeRadious; j++){
-			if (Acolumn+j <= highestColumn){
+			if (Acolumn+j < highestColumn){
 				Vector<Integer> temp = new Vector<Integer>();
 				temp.add(Arow);
 				temp.add(Acolumn + j);
