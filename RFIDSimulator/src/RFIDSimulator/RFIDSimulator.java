@@ -292,9 +292,13 @@ public class RFIDSimulator {
 
 			String sCurrentLine;
 
+<<<<<<< HEAD
 			br = new BufferedReader(new FileReader(
 					//"/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt"));
 					"/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt"));
+=======
+			br = new BufferedReader(new FileReader(link));
+>>>>>>> 03c222b2bfda40ee63259d2152ccc704217abdb9
 
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (!sCurrentLine.equals("**")) {
