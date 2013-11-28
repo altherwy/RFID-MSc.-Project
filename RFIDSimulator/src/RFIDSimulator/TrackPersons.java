@@ -224,9 +224,10 @@ public class TrackPersons {
 			if(second.get(i).size() == 2){
 				Vector<Integer> temp = new Vector<Integer>();
 				temp = resolveAmbiguity(i, second.get(i), first, second, size,1);
+				System.out.println("SSSS "+temp.size());
 				if(temp.get(2).equals(6666) || temp.get(2).equals(1)){
 					second.get(i).add(6666);
-					if(temp.size() == 3){
+					if(temp.size() >= 3){
 					temp.remove(2);
 					temp.add(2,6666);
 			       newSecond.add(temp);
@@ -265,24 +266,28 @@ public class TrackPersons {
  	 	int b1 = Math.abs(beforeFirst.get(1) - current.get(1)); // First's column
  	 	int b2 = Math.abs(beforeSecond.get(1) - current.get(1));  // Second's column
  	 	
- 	 	a1 = Math.abs(a1-b1);
- 	 	a2 = Math.abs(a2-b2);
- 	 	System.out.println("a1 "+a1+" a2 "+a2);
- 	 	if(a1 == a2){
+ 	 	System.out.println("a1 "+a1+" a2 "+a2+" "+current+" 55is "+beforeFirst+" 66ID "+beforeSecond);
+ 	 	if(a1 == a2 && b1 == b2){
  	 		current.add(ID);
- 	 	return current;
- 	 	}
- 	 	if(a1 < a2){
- 	 		current.add(5555);
  	 		return current;
  	 	}
- 	 	else
- 	 	{
- 	 		current.add(6666);
- 	 		return current;
- 	 		
+ 	 	if(a1 < a2 && b1<b2 ){
+ 	 		current.add(5555);return current;
  	 	}
-		
+ 	 	if(a1 > a2 && b2 > b1){
+ 	 		current.add(6666);return current;
+ 	 	}
+ 	 	int A = Math.min(a1, a2);
+ 	 	int B = Math.min(b1, b2);
+ 	 	int min = Math.min(A, B);
+ 	 	
+ 	 	if(min == a1 || min == b1){
+ 	 		current.add(5555); return current;
+ 	 	}
+ 	 	
+ 	 		current.add(6666);	return current;
+ 	 	
+ 	 	
 	}
 	
 	 
