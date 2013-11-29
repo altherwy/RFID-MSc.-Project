@@ -8,8 +8,10 @@ public class TrackPersons {
 
 	public AStarAlgorithm AStar, star;
 	public RFIDSimulator RFID;
-	public final String firstLink = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios1.txt";
-	public final String secondLink = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios2.txt";
+////	public final String firstLink = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios1.txt";
+////	public final String secondLink = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios2.txt";
+	public final String firstLink = "/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios1.txt";
+	public final String secondLink = "/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios2.txt";
 	public Vector<Vector<Integer>> RRs, MSs;
 
 	public TrackPersons(Vector<Vector<Integer>> RRs, Vector<Vector<Integer>> MSs) {
