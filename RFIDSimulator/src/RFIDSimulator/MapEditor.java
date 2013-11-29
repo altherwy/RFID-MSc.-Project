@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.border.StrokeBorder;
+//import javax.swing.border.StrokeBorder;
 
 public class MapEditor {
 

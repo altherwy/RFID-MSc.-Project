@@ -32,7 +32,7 @@ public class RFIDSimulator {
 	public final int virtualMSRange = 2;
 	public Vector<Vector<Integer>> rfidreaders, readersRange, MS, MSranges;
 	//public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
-	public final String link = "/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
+	public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
 
 	public int max = 0;
 
