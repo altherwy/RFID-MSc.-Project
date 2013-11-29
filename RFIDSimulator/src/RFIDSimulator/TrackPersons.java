@@ -135,6 +135,8 @@ public class TrackPersons {
 		
 		Vector<Vector<Integer>> PermenantPath = new Vector<Vector<Integer>>();
 		Vector<Vector<Integer>> PermenantPath2 = new Vector<Vector<Integer>>();
+		Vector<Vector<Integer>> RealPath1 = new Vector<Vector<Integer>>();
+		Vector<Vector<Integer>> RealPath2 = new Vector<Vector<Integer>>();
 		firstScenario = RFID.readFromFile(firstLink);
 		secondScenarion = RFID.readFromFile(secondLink);
 		/************************************************/
@@ -152,9 +154,10 @@ public class TrackPersons {
 			}
 			//for(Vector<Integer> item : tempPath)
 			//System.out.println(" Row "+item.get(1)+" Column "+item.get(2));
-				
+				RealPath1.addAll(tempPath);
 			PermenantPath.addAll(temp);
 		}
+		
 		finalTracking.add(PermenantPath);
 		
 		for (int i = 0; i < secondScenarion.size(); i++) {
@@ -172,12 +175,17 @@ public class TrackPersons {
 			for(Vector<Integer> item : tempPath)
 				System.out.println(" Row "+item.get(1)+" Column "+item.get(2));
 		System.out.println("**************");
+		RealPath2.addAll(tempPath);
 			PermenantPath2.addAll(temp);
 		}
 		finalTracking.add(PermenantPath2);
-		
+	
 		printPath(PermenantPath, PermenantPath2);
-		return matchingMStoPersons(finalTracking);
+		Vector<Vector<Vector<Integer>>> TR =  matchingMStoPersons(finalTracking);
+		TR.add(RealPath1);
+		TR.add(RealPath2);
+		return TR;
+		
 		//return finalTracking;
 	   
 	}

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.naming.Context;
@@ -28,6 +29,7 @@ public class RFIDSimulator {
 	public final int virtualMSRange = 2;
 	public Vector<Vector<Integer>> rfidreaders, readersRange, MS, MSranges;
 	public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
+	public MapEditor mapEditor;
 
 	public int max = 0;
 
@@ -38,6 +40,7 @@ public class RFIDSimulator {
          readersRange = new Vector<Vector<Integer>>();
          MS = new Vector<Vector<Integer>>();
          MSranges = new Vector<Vector<Integer>>();
+         
 	}
 
 	/**
@@ -99,10 +102,12 @@ public class RFIDSimulator {
 		
 		//Vector<Vector<Integer>> tempV = track.Track(path, RFID.readersRange, RFID.MSranges, 12345);
 		TrackPersons track = new TrackPersons(RFID.readersRange, RFID.MSranges);
-		Vector<Vector<Vector<Integer>>> trA= track.allTrackingResults();
-		for(Vector<Vector<Integer>> item : trA)
+		Vector<Vector<Vector<Integer>>> trackingResultsforALL= track.allTrackingResults();
+		for(Vector<Vector<Integer>> item : trackingResultsforALL)
 			for (Vector<Integer> small : item)
 			System.out.println(small);
+		RFID.mapEditor = new MapEditor(RFID.rfidreaders, RFID.MS, trackingResultsforALL);
+		
 		
 	}
 

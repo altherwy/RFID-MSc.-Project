@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+
 import javax.swing.*;
 //import javax.swing.border.StrokeBorder;
 
@@ -25,11 +27,16 @@ public class MapEditor {
     public static final Color SECOND_PATH_COLOR = Color.RED;
 
 
-    public static void main(String[] args) {
-        new MapEditor();
-    }
 
-    public MapEditor() {
+   // public static void main(String[] args) {
+     //   new MapEditor();
+    //}
+
+    public MapEditor(Vector<Vector<Integer>> readers, Vector<Vector<Integer>> MS, Vector<Vector<Vector<Integer>>> trackingResults) {
+    	Vector<Vector<Integer>> person1 = trackingResults.get(0);
+    	Vector<Vector<Integer>> person2 = trackingResults.get(1);
+    	Vector<Vector<Integer>> realPerson1 = trackingResults.get(2);
+    	Vector<Vector<Integer>> realPerson2 = trackingResults.get(3);
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -74,7 +81,7 @@ public class MapEditor {
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},//7
 
 
-                    {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,1,1},//8
+                    {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,2,1,1},//8
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,1,1},//9
                     {1,1,1,1,1, 1,1,1,1,1 ,1,1,1,1,1, 1,0,0,0,0, 0,0,0,0,0, 0,1,1,0,0, 0,0,0,1,1},//10
                     {0,0,1,1,0, 0,0,0,0,1 ,1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},//11
@@ -84,7 +91,7 @@ public class MapEditor {
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 1,1,0,0,0, 1,1,1,1,1, 1,0,0,0,0, 0,0,0,0,0},//14
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0},//15
                     
-                    {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0},//16
+                    {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,2},//16
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0},//17
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,0,1},//18
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,0,0},//19
