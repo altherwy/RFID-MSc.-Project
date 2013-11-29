@@ -20,19 +20,23 @@ public class MapEditor {
     public static final int BLOCK = 1;  // block
     public static final int FIRST_PATH = 2; // first person path ( path point)
     public static final int SECOND_PATH = 3; // second person path ( path point);
+    public static final int READER = 4; // second person path ( path point);
 
     public static final Color SPACE_COLOR = Color.white;
     public static final Color BLOCK_COLOR = Color.darkGray;
     public static final Color FIRST_PATH_COLOR = Color.blue;
     public static final Color SECOND_PATH_COLOR = Color.RED;
+    public static final Color READER_COLOR = Color.GREEN;
+
+    public static Vector<Vector<Integer>> readers;
 
 
-
-   // public static void main(String[] args) {
+    // public static void main(String[] args) {
      //   new MapEditor();
     //}
 
     public MapEditor(Vector<Vector<Integer>> readers, Vector<Vector<Integer>> MS, Vector<Vector<Vector<Integer>>> trackingResults) {
+        MapEditor.readers = readers;
     	Vector<Vector<Integer>> person1 = trackingResults.get(0);
     	Vector<Vector<Integer>> person2 = trackingResults.get(1);
     	Vector<Vector<Integer>> realPerson1 = trackingResults.get(2);
@@ -101,7 +105,7 @@ public class MapEditor {
 
             };
 
-            cells = new ArrayList<Rectangle>(columnCount * rowCount);
+            this.drawReaders();
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -112,6 +116,13 @@ public class MapEditor {
 
         }
 
+        public void drawReaders(){
+            for(Vector<Integer> v : MapEditor.readers){
+                  int row = v.get(0);
+                  int col = v.get(1);
+                  this.map[row][col] = READER;
+            }
+        }
         public void updateCell(Point point) {
             int cellIndexCol = (int) Math.floor(point.x / this.cellSize);
             int cellIndexRow = (int) Math.floor(point.y / this.cellSize);
@@ -171,6 +182,10 @@ public class MapEditor {
                             break;
                         case SECOND_PATH:
                             g2d.setColor(SECOND_PATH_COLOR);
+                            g2d.fill(cell);
+                            break;
+                        case READER:
+                            g2d.setColor(READER_COLOR);
                             g2d.fill(cell);
                             break;
                     }
