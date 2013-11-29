@@ -17,10 +17,6 @@ import javax.xml.bind.Unmarshaller;
 public class RFIDSimulator {
 
 	public static final String xml_File_Name = "src/RFIDSimulator/FloorPlan.xml";
-	// public static final int START_ROW = 6; //1
-	// public static final int START_COLUMN = 10; //0
-	// public static final int END_ROW = 19;//5
-	// public static final int END_COLUMN = 29;//0
 	public AStarAlgorithm AST;
 	public Vector<Integer> numbersForSort = new Vector<Integer>();
 	public Vector<Vector<Integer>> RFIDPlaces = new Vector<Vector<Integer>>();
@@ -31,7 +27,6 @@ public class RFIDSimulator {
 	public final int virtualReaderRnage = 4;
 	public final int virtualMSRange = 2;
 	public Vector<Vector<Integer>> rfidreaders, readersRange, MS, MSranges;
-	//public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
 	public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
 
 	public int max = 0;
