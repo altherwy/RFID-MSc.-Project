@@ -1,6 +1,7 @@
 package RFIDSimulator;
 
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.Vector;
 
 public class TrackPersons {
@@ -147,6 +148,8 @@ public class TrackPersons {
 				if(temp.firstElement().equals(PermenantPath.lastElement()))
 					temp.remove(0);
 			}
+			//for(Vector<Integer> item : tempPath)
+			//System.out.println(" Row "+item.get(1)+" Column "+item.get(2));
 				
 			PermenantPath.addAll(temp);
 		}
@@ -164,10 +167,14 @@ public class TrackPersons {
 				if(temp.firstElement().equals(PermenantPath2.lastElement()))
 					temp.remove(0);
 			}
-				
+			for(Vector<Integer> item : tempPath)
+				System.out.println(" Row "+item.get(1)+" Column "+item.get(2));
+		System.out.println("**************");
 			PermenantPath2.addAll(temp);
 		}
 		finalTracking.add(PermenantPath2);
+		
+		printPath(PermenantPath, PermenantPath2);
 		return matchingMStoPersons(finalTracking);
 		//return finalTracking;
 	   
@@ -224,7 +231,7 @@ public class TrackPersons {
 			if(second.get(i).size() == 2){
 				Vector<Integer> temp = new Vector<Integer>();
 				temp = resolveAmbiguity(i, second.get(i), first, second, size,1);
-				System.out.println("SSSS "+temp.size());
+				
 				if(temp.get(2).equals(6666) || temp.get(2).equals(1)){
 					second.get(i).add(6666);
 					if(temp.size() >= 3){
@@ -243,6 +250,11 @@ public class TrackPersons {
 			else
 				newSecond.add(second.get(i));
 				
+		}
+		for(int i=size-1; i<second.size(); i++){
+			if(second.get(i).size() == 2)
+				second.get(i).add(6666);
+			newSecond.add(second.get(i));
 		}
 		finalResults.add(newFirst);
 		finalResults.add(newSecond);
@@ -266,7 +278,7 @@ public class TrackPersons {
  	 	int b1 = Math.abs(beforeFirst.get(1) - current.get(1)); // First's column
  	 	int b2 = Math.abs(beforeSecond.get(1) - current.get(1));  // Second's column
  	 	
- 	 	System.out.println("a1 "+a1+" a2 "+a2+" "+current+" 55is "+beforeFirst+" 66ID "+beforeSecond);
+ 	 	//System.out.println("a1 "+a1+" a2 "+a2+" "+current+" 55is "+beforeFirst+" 66ID "+beforeSecond);
  	 	if(a1 == a2 && b1 == b2){
  	 		current.add(ID);
  	 		return current;
@@ -288,6 +300,27 @@ public class TrackPersons {
  	 		current.add(6666);	return current;
  	 	
  	 	
+	}
+	public void printPath(Vector<Vector<Integer>> pathA, Vector<Vector<Integer>> pathB){
+		for(int i=0; i< pathB.size(); i++){
+			if(i+1 <= pathB.size()-1){
+				star = new AStarAlgorithm();
+		ArrayList<Vector<Integer>> tempPath = star.findPath(pathB.get(i).get(0), pathB.get(i).get(1),
+				pathB.get(i+1).get(0), pathB.get(i+1).get(1));
+		tempPath =RFID.finalSolution(RFID.swap(tempPath), pathB.get(i).get(0), pathB.get(i).get(1));
+		System.out.println("Start Path");
+		for(Vector<Integer> item : tempPath )
+			System.out.println(item.get(1)+" "+item.get(2));
+		System.out.println("End Path");
+			}
+		}
+		System.out.println("Tracking Results");
+		for(Vector<Integer> item : pathB )
+			System.out.println(item);
+		System.out.println("End of the Road");
+
+		System.out.println("-----------------------");
+		
 	}
 	
 	 
