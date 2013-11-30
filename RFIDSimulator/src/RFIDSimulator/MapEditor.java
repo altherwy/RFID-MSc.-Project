@@ -156,8 +156,8 @@ public class MapEditor {
         public void drawRealPerson1Points(){
             realPerson1Points = new Vector<Point>();
             for(Vector<Integer> v : MapEditor.realPerson1){
-                  int row = v.get(0);
-                  int col = v.get(1);
+                  int row = v.get(1);
+                  int col = v.get(2);
                 realPerson1Points.add(new Point(col,row));
             }
 
@@ -249,7 +249,7 @@ public class MapEditor {
             for(int i=0;i<realPerson1Points.size();i++){
                 if(i+1 >= realPerson1Points.size() || i+2 >= realPerson1Points.size())
                     break;
-                this.drawPath(g2d,realPerson1Points.get(i+1),realPerson1Points.get(i+2),Color.BLUE);
+                this.drawPath(g2d,realPerson1Points.get(i),realPerson1Points.get(i+1),Color.BLUE);
             }
 
             g2d.dispose();
