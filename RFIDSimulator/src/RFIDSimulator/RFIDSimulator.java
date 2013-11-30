@@ -104,9 +104,9 @@ public class RFIDSimulator {
 		//Vector<Vector<Integer>> tempV = track.Track(path, RFID.readersRange, RFID.MSranges, 12345);
 		TrackPersons track = new TrackPersons(RFID.readersRange, RFID.MSranges);
 		Vector<Vector<Vector<Integer>>> trackingResultsforALL= track.allTrackingResults();
-		for(Vector<Vector<Integer>> item : trackingResultsforALL)
-			for (Vector<Integer> small : item)
-			System.out.println(small);
+		//for(Vector<Integer> item : trackingResultsforALL.get(0))
+			//for (Vector<Integer> small : item)
+			//System.out.println(item);
 		RFID.mapEditor = new MapEditor(RFID.rfidreaders, RFID.MS, trackingResultsforALL);
 		
 		

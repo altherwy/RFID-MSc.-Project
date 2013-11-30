@@ -152,9 +152,8 @@ public class TrackPersons {
 				if(temp.firstElement().equals(PermenantPath.lastElement()))
 					temp.remove(0);
 			}
-			//for(Vector<Integer> item : tempPath)
-			//System.out.println(" Row "+item.get(1)+" Column "+item.get(2));
-				RealPath1.addAll(tempPath);
+			
+			RealPath1.addAll(tempPath);
 			PermenantPath.addAll(temp);
 		}
 		
@@ -172,15 +171,13 @@ public class TrackPersons {
 				if(temp.firstElement().equals(PermenantPath2.lastElement()))
 					temp.remove(0);
 			}
-			for(Vector<Integer> item : tempPath)
-				System.out.println(" Row "+item.get(1)+" Column "+item.get(2));
-		System.out.println("**************");
-		RealPath2.addAll(tempPath);
+			
+		    RealPath2.addAll(tempPath);
 			PermenantPath2.addAll(temp);
 		}
 		finalTracking.add(PermenantPath2);
 	
-		printPath(PermenantPath, PermenantPath2);
+		//printPath(PermenantPath, PermenantPath2);
 		Vector<Vector<Vector<Integer>>> TR =  matchingMStoPersons(finalTracking);
 		TR.add(RealPath1);
 		TR.add(RealPath2);
@@ -288,7 +285,7 @@ public class TrackPersons {
  	 	int b1 = Math.abs(beforeFirst.get(1) - current.get(1)); // First's column
  	 	int b2 = Math.abs(beforeSecond.get(1) - current.get(1));  // Second's column
  	 	
- 	 	//System.out.println("a1 "+a1+" a2 "+a2+" "+current+" 55is "+beforeFirst+" 66ID "+beforeSecond);
+ 	 	
  	 	if(a1 == a2 && b1 == b2){
  	 		current.add(ID);
  	 		return current;

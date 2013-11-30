@@ -124,7 +124,7 @@ public class MapEditor {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     CanvasPanel panel = (CanvasPanel) e.getComponent();
-                    panel.updateCell(e.getPoint());
+                   // panel.updateCell(e.getPoint());
                 }
             });
 
@@ -194,8 +194,8 @@ public class MapEditor {
             Graphics2D g2d = (Graphics2D) g.create();
 
 
-            int width = 600;
-            int height = 600;
+            int width = this.getWidth();
+            int height = this.getHeight();
             int rowCount = map.length;
             int colCount = map[0].length;
 
@@ -253,7 +253,7 @@ public class MapEditor {
             }
 
             for(int i=0;i<realPerson1Points.size();i++){
-                if(i+1 >= realPerson1Points.size() || i+2 >= realPerson1Points.size())
+                if(i+1 >= realPerson1Points.size())
                     break;
                 this.drawPath(g2d,realPerson1Points.get(i),realPerson1Points.get(i+1),Color.BLUE);
             }
@@ -280,7 +280,7 @@ public class MapEditor {
             JToolBar toolBar = new JToolBar("Still draggable");
             addButtons(toolBar);
 
-            add(toolBar, BorderLayout.PAGE_START);
+            //add(toolBar, BorderLayout.PAGE_START);
             add(new CanvasPanel(), BorderLayout.CENTER);
         }
 
