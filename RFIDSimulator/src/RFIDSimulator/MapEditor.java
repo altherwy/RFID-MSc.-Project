@@ -33,7 +33,7 @@ public class MapEditor {
 
     public static Vector<Vector<Integer>> readers;
     public static Vector<Vector<Integer>> MS;
-
+    public static Vector<Vector<Integer>> person1;
 
     // public static void main(String[] args) {
      //   new MapEditor();
@@ -46,6 +46,8 @@ public class MapEditor {
     	Vector<Vector<Integer>> person2 = trackingResults.get(1);
     	Vector<Vector<Integer>> realPerson1 = trackingResults.get(2);
     	Vector<Vector<Integer>> realPerson2 = trackingResults.get(3);
+        MapEditor.person1 = person1;
+
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -74,7 +76,7 @@ public class MapEditor {
         private List<Rectangle> cells;
         private Point selectedCell;
         private int map[][];
-
+        private Vector<Point> person1Points;
         public CanvasPanel() {
 
             this.map = new int[][] {
@@ -112,6 +114,7 @@ public class MapEditor {
 
             this.drawReaders();
             this.drawMS();
+            this.drawPerson1();
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -136,6 +139,18 @@ public class MapEditor {
                   this.map[row][col] =ms;
             }
         }
+
+        public void drawPerson1(){
+            person1Points = new Vector<Point>();
+            for(Vector<Integer> v : MapEditor.person1){
+                  int row = v.get(0);
+                  int col = v.get(1);
+                  person1Points.add(new Point(col,row));
+            }
+
+        }
+
+
         public void updateCell(Point point) {
             int cellIndexCol = (int) Math.floor(point.x / this.cellSize);
             int cellIndexRow = (int) Math.floor(point.y / this.cellSize);
@@ -212,19 +227,19 @@ public class MapEditor {
                 offsetX = 0;
             }
 
-            this.drawPath(g2d);
+            for(int i=0;i<person1Points.size();i++){
+                if(i+1 >= person1Points.size())
+                    break;
+                this.drawPath(g2d,person1Points.get(i),person1Points.get(i+1));
+            }
 
             g2d.dispose();
         }
 
-        public void drawPath(Graphics2D g) {
+        public void drawPath(Graphics2D g,Point point1,Point point2) {
             g.setColor(Color.RED);
             g.setStroke(new BasicStroke(2));
-            g.drawLine(3 * cellSize + cellSize / 2, 2 * cellSize + cellSize / 2, 12 * cellSize + cellSize / 2, 7 * cellSize + cellSize / 2);
-            g.drawLine(12 * cellSize + cellSize / 2, 7 * cellSize + cellSize / 2, 13 * cellSize + cellSize / 2, 12 * cellSize + cellSize / 2);
-            g.drawLine(13 * cellSize + cellSize / 2, 12 * cellSize + cellSize / 2, 15 * cellSize + cellSize / 2, 15 * cellSize + cellSize / 2);
-
-
+            g.drawLine(point1.x * cellSize + cellSize / 2, point1.y * cellSize + cellSize / 2, point2.x * cellSize + cellSize / 2, point2.y * cellSize + cellSize / 2);
         }
     }
 
