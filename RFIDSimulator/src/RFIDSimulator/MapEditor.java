@@ -34,6 +34,7 @@ public class MapEditor {
     public static Vector<Vector<Integer>> readers;
     public static Vector<Vector<Integer>> MS;
     public static Vector<Vector<Integer>> person1;
+    public static Vector<Vector<Integer>> realPerson1;
 
     // public static void main(String[] args) {
      //   new MapEditor();
@@ -47,7 +48,7 @@ public class MapEditor {
     	Vector<Vector<Integer>> realPerson1 = trackingResults.get(2);
     	Vector<Vector<Integer>> realPerson2 = trackingResults.get(3);
         MapEditor.person1 = person1;
-
+        MapEditor.realPerson1 = realPerson1;
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -77,6 +78,7 @@ public class MapEditor {
         private Point selectedCell;
         private int map[][];
         private Vector<Point> person1Points;
+        private Vector<Point> realPerson1Points;
         public CanvasPanel() {
 
             this.map = new int[][] {
@@ -86,8 +88,8 @@ public class MapEditor {
                     {1,1,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,1,1},//2
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,1,1},//3
 
-                    {1,1,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,1,1,1,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,1,1},//4
-                    {1,1,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,1,1},//5
+                    {1,1,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,1,1,1,2, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,1,1},//4
+                    {1,1,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,2,0, 0,0,0,1,1},//5
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,0,0, 0,0,0,0,0},//6
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},//7
 
@@ -115,6 +117,7 @@ public class MapEditor {
             this.drawReaders();
             this.drawMS();
             this.drawPerson1();
+            this.drawRealPerson1Points();
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -146,6 +149,16 @@ public class MapEditor {
                   int row = v.get(0);
                   int col = v.get(1);
                   person1Points.add(new Point(col,row));
+            }
+
+        }
+
+        public void drawRealPerson1Points(){
+            realPerson1Points = new Vector<Point>();
+            for(Vector<Integer> v : MapEditor.realPerson1){
+                  int row = v.get(0);
+                  int col = v.get(1);
+                realPerson1Points.add(new Point(col,row));
             }
 
         }
@@ -230,14 +243,20 @@ public class MapEditor {
             for(int i=0;i<person1Points.size();i++){
                 if(i+1 >= person1Points.size())
                     break;
-                this.drawPath(g2d,person1Points.get(i),person1Points.get(i+1));
+                this.drawPath(g2d,person1Points.get(i),person1Points.get(i+1),Color.red);
+            }
+
+            for(int i=0;i<realPerson1Points.size();i++){
+                if(i+1 >= realPerson1Points.size() || i+2 >= realPerson1Points.size())
+                    break;
+                this.drawPath(g2d,realPerson1Points.get(i+1),realPerson1Points.get(i+2),Color.BLUE);
             }
 
             g2d.dispose();
         }
 
-        public void drawPath(Graphics2D g,Point point1,Point point2) {
-            g.setColor(Color.RED);
+        public void drawPath(Graphics2D g,Point point1,Point point2,Color color) {
+            g.setColor(color);
             g.setStroke(new BasicStroke(2));
             g.drawLine(point1.x * cellSize + cellSize / 2, point1.y * cellSize + cellSize / 2, point2.x * cellSize + cellSize / 2, point2.y * cellSize + cellSize / 2);
         }
