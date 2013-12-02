@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -45,10 +47,11 @@ public class MapEditor {
     public MapEditor(Vector<Vector<Integer>> readers, Vector<Vector<Integer>> MS, Vector<Vector<Vector<Integer>>> trackingResults) {
         MapEditor.readers = readers;
         MapEditor.MS = MS;
-    	Vector<Vector<Integer>> person1 = trackingResults.get(0);
-    	Vector<Vector<Integer>> person2 = trackingResults.get(1);
-    	Vector<Vector<Integer>> realPerson1 = trackingResults.get(2);
-    	Vector<Vector<Integer>> realPerson2 = trackingResults.get(3);
+    	Vector<Vector<Integer>> person1 = trackingResults.get(2);
+    	//Vector<Vector<Integer>> person1 = trackingResults.get(3);
+    	Vector<Vector<Integer>> realPerson1 = trackingResults.get(4);
+    	//Vector<Vector<Integer>> realPerson1 = trackingResults.get(5);
+    	
         MapEditor.person1 = person1;
         MapEditor.realPerson1 = realPerson1;
         EventQueue.invokeLater(new Runnable() {
@@ -104,7 +107,7 @@ public class MapEditor {
                     {0,0,0,0,0, 3,3,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},//12
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},//13
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 1,1,0,0,0, 1,1,1,1,1, 1,0,0,0,0, 0,0,0,0,0},//14
-                    {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0},//15
+                    {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,4},//15
                     
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,6},//16
                     {0,0,0,0,0, 0,0,0,0,0 ,0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0,0, 0,0,0,0,0},//17
@@ -141,6 +144,7 @@ public class MapEditor {
             for(Vector<Integer> v : MapEditor.MS){
                   int row = v.get(0);
                   int col = v.get(1);
+                  if(row != 15 && col != 34)
                   this.map[row][col] =ms;
             }
         }
@@ -148,8 +152,8 @@ public class MapEditor {
         public void drawPerson1(){
             person1Points = new Vector<Point>();
             for(Vector<Integer> v : MapEditor.person1){
-                  int row = v.get(0);
-                  int col = v.get(1);
+                  int row = v.get(1);
+                  int col = v.get(2);
                   person1Points.add(new Point(col,row));
             }
 
@@ -254,8 +258,10 @@ public class MapEditor {
 
             for(int i=0;i<realPerson1Points.size();i++){
                 if(i+1 >= realPerson1Points.size())
-                    break;
+                	break;
+                
                 this.drawPath(g2d,realPerson1Points.get(i),realPerson1Points.get(i+1),Color.BLUE);
+                
             }
 
             g2d.dispose();

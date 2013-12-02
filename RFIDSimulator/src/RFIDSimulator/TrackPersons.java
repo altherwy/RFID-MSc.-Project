@@ -1,6 +1,7 @@
 package RFIDSimulator;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -32,7 +33,8 @@ public class TrackPersons {
 		Vector<Vector<Integer>> results = new Vector<Vector<Integer>>();
 
 		for (int index = 0; index < path.size(); index++) {
-
+			
+            // Reading for Rs
 			for (int j = 0; j < RRs.size(); j++) {
 				if (isEqual(path.get(index), RRs.get(j))) {
 					Vector<Integer> temp = new Vector<Integer>();
@@ -44,6 +46,7 @@ public class TrackPersons {
 
 				}
 			}
+			// Reading for MSs
 			for (int j = 0; j < MSs.size(); j++) {
 				if (isEqual(path.get(index), MSs.get(j))) {
 					Vector<Integer> temp = new Vector<Integer>();
@@ -177,8 +180,10 @@ public class TrackPersons {
 		}
 		finalTracking.add(PermenantPath2);
 	
-		//printPath(PermenantPath, PermenantPath2);
+		
 		Vector<Vector<Vector<Integer>>> TR =  matchingMStoPersons(finalTracking);
+		TR.add(printPath(PermenantPath));
+		TR.add(printPath(PermenantPath2));
 		TR.add(RealPath1);
 		TR.add(RealPath2);
 		return TR;
@@ -308,26 +313,31 @@ public class TrackPersons {
  	 	
  	 	
 	}
-	public void printPath(Vector<Vector<Integer>> pathA, Vector<Vector<Integer>> pathB){
-		for(int i=0; i< pathB.size(); i++){
-			if(i+1 <= pathB.size()-1){
+	/*
+	 * the results of tracking cell by cell
+	 */
+	public Vector<Vector<Integer>> printPath( Vector<Vector<Integer>> trackingPath){
+		Vector<Vector<Integer>> trackingResults = new Vector<Vector<Integer>>();
+		for(int i=0; i< trackingPath.size(); i++){
+			if(i+1 <= trackingPath.size()-1){
 				star = new AStarAlgorithm();
-		ArrayList<Vector<Integer>> tempPath = star.findPath(pathB.get(i).get(0), pathB.get(i).get(1),
-				pathB.get(i+1).get(0), pathB.get(i+1).get(1));
-		tempPath =RFID.finalSolution(RFID.swap(tempPath), pathB.get(i).get(0), pathB.get(i).get(1));
-		System.out.println("Start Path");
+		ArrayList<Vector<Integer>> tempPath = star.findPath(trackingPath.get(i).get(0), trackingPath.get(i).get(1),
+				trackingPath.get(i+1).get(0), trackingPath.get(i+1).get(1));
+		tempPath =RFID.finalSolution(RFID.swap(tempPath), trackingPath.get(i).get(0), trackingPath.get(i).get(1));
+		
 		for(Vector<Integer> item : tempPath )
-			System.out.println(item.get(1)+" "+item.get(2));
-		System.out.println("End Path");
-			}
+		trackingResults.add(item);
 		}
-		System.out.println("Tracking Results");
-		for(Vector<Integer> item : pathB )
+			}
+		
+		/*System.out.println("Tracking Results");
+		for(Vector<Integer> item : trackingPath )
 			System.out.println(item);
 		System.out.println("End of the Road");
 
-		System.out.println("-----------------------");
+		System.out.println("-----------------------");*/
 		
+		return trackingResults;
 	}
 	
 	 

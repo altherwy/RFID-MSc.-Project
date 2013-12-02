@@ -85,7 +85,6 @@ public class RFIDSimulator {
 		RFID.RFIDPlaces = RFID.orderCells();
 		
 		
-		
 		Vector<Vector<Integer>> finalPlaces = RFID.RFIDReadersPlaces(RFID.RFIDPlaces); // find the readers spots
 		RFID.rfidreaders = finalPlaces; // our first guy, RFID readers without ranges
 		Vector<Vector<Integer>> readersWithoutRanges = finalPlaces;
@@ -98,17 +97,12 @@ public class RFIDSimulator {
 		
 		
 		//********************//
-		ArrayList<Vector<Integer>> path = RFID.AST.findPath(4, 19, 3, 32);
-		path = RFID.finalSolution(RFID.swap(path), 4,19);
 		
-		//Vector<Vector<Integer>> tempV = track.Track(path, RFID.readersRange, RFID.MSranges, 12345);
+		
 		TrackPersons track = new TrackPersons(RFID.readersRange, RFID.MSranges);
 		Vector<Vector<Vector<Integer>>> trackingResultsforALL= track.allTrackingResults();
-		//for(Vector<Integer> item : trackingResultsforALL.get(0))
-			//for (Vector<Integer> small : item)
-			//System.out.println(item);
-		RFID.mapEditor = new MapEditor(RFID.rfidreaders, RFID.MS, trackingResultsforALL);
 		
+		RFID.mapEditor = new MapEditor(RFID.rfidreaders, RFID.MS, trackingResultsforALL);
 		
 	}
 
