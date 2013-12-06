@@ -28,8 +28,8 @@ public class RFIDSimulator {
 	public final int virtualReaderRnage = 4;
 	public final int virtualMSRange = 2;
 	public Vector<Vector<Integer>> rfidreaders, readersRange, MS, MSranges;
-	//public final String link = "/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
-	public final String link = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/startandend.txt";
+	public final String link = "src/RFIDSimulator/startandend.txt";
+	public final String StationaryLink = "src/RFIDSimulator/stationaryStartandEndPoint.txt";
 	public MapEditor mapEditor;
 
 	public int max = 0;
@@ -52,7 +52,8 @@ public class RFIDSimulator {
 
 		RFIDSimulator RFID = new RFIDSimulator();
 		
-		Vector<Vector<Integer>> startandEnd = RFID.fillStartandEndPoints();
+		//Vector<Vector<Integer>> startandEnd = RFID.fillStartandEndPoints(RFID.link);
+		Vector<Vector<Integer>> startandEnd = RFID.fillStartandEndPoints(RFID.StationaryLink);
 		
 		for (int index = 0; index < startandEnd.size(); index++) {
 			
@@ -68,14 +69,6 @@ public class RFIDSimulator {
 			
 			if (path == null)
 				System.out.println("No cells in the path!!");
-			
-			//for (int i = 0; i < path.size(); i++) {
-				//System.out.println("Row: " + path.get(i).get(1) + "Column: "
-					//	+ path.get(i).get(2));
-			
-			//}
-			
-
 			/*** Here where placing the readers starts ***********/
 			RFID.extractNumbers(path);
 		}
@@ -86,23 +79,35 @@ public class RFIDSimulator {
 		
 		
 		Vector<Vector<Integer>> finalPlaces = RFID.RFIDReadersPlaces(RFID.RFIDPlaces); // find the readers spots
-		RFID.rfidreaders = finalPlaces; // our first guy, RFID readers without ranges
+		RFID.rfidreaders = finalPlaces; // RFID Readers without ranges
 		Vector<Vector<Integer>> readersWithoutRanges = finalPlaces;
 		Vector<Vector<Integer>> readerWithRange = RFID.createPhysicalRange(finalPlaces, RFID.readerRadious); //create the readers ranges
-		RFID.readersRange.addAll(readerWithRange); // our second guy, readers with range
+		RFID.readersRange.addAll(readerWithRange); // RFID Readers with range
 		
 		Vector<Vector<Integer>> MSPlaces = RFID.MSPlaces(RFID.AST.doors, readerWithRange, readersWithoutRanges); // find the MS spots
-		RFID.MS.addAll(MSPlaces); // our third guy, MS without range
-		RFID.MSranges = RFID.createPhysicalRange(MSPlaces, RFID.MSRadious);
+		RFID.MS.addAll(MSPlaces); // MS without range
+		RFID.MSranges = RFID.createPhysicalRange(MSPlaces, RFID.MSRadious); // MS with range
 		
 		
 		//********************//
-		
+		Vector<Integer> entranceAndExitPoint = new Vector<Integer>();
+		entranceAndExitPoint.add(15);
+		entranceAndExitPoint.add(34);
+		RFID.rfidreaders.add(0,entranceAndExitPoint); // Adding RFID Reader at the Entrance and Exit point
+		RFID.MS.remove(1); // Removing any Motion Sensor at the Entrance/Exit point
+		System.out.println("RFID Readers Locations in the form of [row, column]");
+		for(Vector<Integer> item : RFID.rfidreaders)
+			System.out.println(item);
+		System.out.println("Motion Sensors Locations in the form of [row, column]");
+		for(Vector<Integer> item : RFID.MS)
+			System.out.println(item);
 		
 		TrackPersons track = new TrackPersons(RFID.readersRange, RFID.MSranges);
 		Vector<Vector<Vector<Integer>>> trackingResultsforALL= track.allTrackingResults();
 		
-		RFID.mapEditor = new MapEditor(RFID.rfidreaders, RFID.MS, trackingResultsforALL);
+		RFID.mapEditor = new MapEditor(RFID.rfidreaders, RFID.MS, trackingResultsforALL); // Visual Representation for the first person
+		
+		
 		
 	}
 
@@ -247,7 +252,7 @@ public class RFIDSimulator {
 	/*
 	 * add collections of start and end points
 	 */
-	public Vector<Vector<Integer>> fillStartandEndPoints() {
+	public Vector<Vector<Integer>> fillStartandEndPoints(String link) {
 		Vector<Vector<Integer>> save = new Vector<Vector<Integer>>();
 		save.add(fillStartandEndPointsHelper(12, 8, 19, 20));
 		save.add(fillStartandEndPointsHelper(19, 20, 9, 32));

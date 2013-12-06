@@ -43,6 +43,11 @@ public class AStarAlgorithm {
 		vector.add(0);
 		thePath.add(vector);
 		this.openList.add(vector);
+		if(startRow == endRow && startcolumn == endColumn){
+			ArrayList<Vector<Integer>> identical =  new ArrayList<Vector<Integer>>();
+			identical.add(vector);
+			return identical;
+		}
 		// until here is initilazation of start point
 		this.findNeighbours(startRow, startcolumn, endRow, endColumn, 0); // add
 																			// all

@@ -9,10 +9,8 @@ public class TrackPersons {
 
 	public AStarAlgorithm AStar, star;
 	public RFIDSimulator RFID;
-	public final String firstLink = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios1.txt";
-    public final String secondLink = "/Users/youssef_mac/Documents/workspace/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios2.txt";
-	//public final String firstLink = "/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios1.txt";
-	//public final String secondLink = "/Users/abshammeri/git-repositories/YoussefRepo/RFIDSimulator/src/RFIDSimulator/testScenarios2.txt";
+	public final String firstLink = "src/RFIDSimulator/testScenarios1.txt";
+    public final String secondLink = "src/RFIDSimulator/testScenarios2.txt";
 	public Vector<Vector<Integer>> RRs, MSs;
 
 	public TrackPersons(Vector<Vector<Integer>> RRs, Vector<Vector<Integer>> MSs) {
@@ -182,6 +180,22 @@ public class TrackPersons {
 	
 		
 		Vector<Vector<Vector<Integer>>> TR =  matchingMStoPersons(finalTracking);
+		System.out.println("The devices Reading and the assignment algorithm for the first person (Tracking Results)");
+		for(Vector<Integer> item: PermenantPath){
+			if (item.size() == 2)
+				item.add(5555);
+			if(item.size() == 4)
+				item.remove(3);
+			System.out.println(item);
+		}
+		System.out.println("The devices Reading and the assignment algorithm for the second person (Tracking Results)");
+		for(Vector<Integer> item: PermenantPath2){
+			if (item.size() == 2)
+				item.add(6666);
+			if(item.size() == 4)
+				item.remove(3);
+			System.out.println(item);
+		}
 		TR.add(printPath(PermenantPath));
 		TR.add(printPath(PermenantPath2));
 		TR.add(RealPath1);
@@ -329,13 +343,6 @@ public class TrackPersons {
 		trackingResults.add(item);
 		}
 			}
-		
-		/*System.out.println("Tracking Results");
-		for(Vector<Integer> item : trackingPath )
-			System.out.println(item);
-		System.out.println("End of the Road");
-
-		System.out.println("-----------------------");*/
 		
 		return trackingResults;
 	}

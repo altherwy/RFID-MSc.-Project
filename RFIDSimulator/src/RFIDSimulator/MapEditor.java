@@ -47,10 +47,18 @@ public class MapEditor {
     public MapEditor(Vector<Vector<Integer>> readers, Vector<Vector<Integer>> MS, Vector<Vector<Vector<Integer>>> trackingResults) {
         MapEditor.readers = readers;
         MapEditor.MS = MS;
-    	Vector<Vector<Integer>> person1 = trackingResults.get(2);
-    	//Vector<Vector<Integer>> person1 = trackingResults.get(3);
-    	Vector<Vector<Integer>> realPerson1 = trackingResults.get(4);
-    	//Vector<Vector<Integer>> realPerson1 = trackingResults.get(5);
+        Vector<Vector<Integer>> person1 = new Vector<Vector<Integer>>();
+        Vector<Vector<Integer>> realPerson1= new Vector<Vector<Integer>>();
+        int resultIndex = 1;
+        if(resultIndex == 1){
+        person1 = trackingResults.get(2);
+    	realPerson1 = trackingResults.get(4);
+        }
+        else{
+        person1 = trackingResults.get(3);
+        realPerson1 = trackingResults.get(5);
+        }
+    	//Vector<Vector<Integer>> realPerson1 = trackingResults.get(3); // for 5 readers
     	
         MapEditor.person1 = person1;
         MapEditor.realPerson1 = realPerson1;
